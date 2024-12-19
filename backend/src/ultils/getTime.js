@@ -11,7 +11,7 @@ const getTime = {
     return moment().tz("Asia/Ho_Chi_Minh").format("YYYY-MM-DD HH:mm:ss");
   },
   currenUnix: function () {
-    return moment().tz("Asia/Ho_Chi_Minh").unix();
+    return moment().tz("Asia/Ho_Chi_Minh").valueOf();
   },
   startDateUnix: function () {
     return moment().tz("Asia/Ho_Chi_Minh").startOf("day").unix();

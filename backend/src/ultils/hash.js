@@ -4,7 +4,6 @@ const configureEnvironment = require("../config/dotenv.config");
 const {
   APP_KEY
 } = configureEnvironment();
-const SettingsModel = require('../models/settings.model');
 const db = require("../dbs/init.mysql");
 const { BusinessLogicError } = require("../core/error.response");
 const validateModel = require("../models/validate.model");

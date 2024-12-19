@@ -1,3 +1,3 @@
 module.exports = (app) => {
-  require("./priority.route")(app);
+  require("./auth/login.route")(app);
 };
