@@ -8,6 +8,10 @@ class LoginService {
       return result;
     } catch (e) {
       throw e;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
     }
   }
 }

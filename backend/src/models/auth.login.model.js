@@ -1,8 +1,8 @@
 const LoginResponseSchma = require("./schema/loginResponse.schema");
 const DatabaseModel = require("./database.model");
-const tableName = require("../constants/tableName.constant");
 const { BusinessLogicError } = require("../core/error.response");
 const configureEnvironment = require("../config/dotenv.config");
+const userModel = require("./user.model");
 const hash = require("../ultils/hash");
 const {
   ACCESS_TOKEN_SECRET,
@@ -15,20 +15,7 @@ class LoginModel extends DatabaseModel {
   constructor() {
     super();
   }
-  async getUserByEmail(con, email) {
-    try {
-      const result = await this.select(
-        con,
-        tableName.tableUser,
-        "id, username, email, password, role, status, created_at, updated_at",
-        "email = ?",
-        [email]
-      );
-      return result[0];
-    } catch (e) {
-      throw e;
-    }
-  }
+
   async generateAccessToken(username, email, role) {
     try {
       const accessToken = jwt.sign(
@@ -63,13 +50,19 @@ class LoginModel extends DatabaseModel {
   }
   async login(con, email, password) {
     try {
-      const user = await this.getUserByEmail(con, email);
+      const user = await userModel.getUserByEmail(con, email);
       if (!user) {
-        throw new BusinessLogicError("User not found", [], 404);
+        throw new BusinessLogicError("User not found", [], 500);
       }
       const checkPassword = await hash.checkPassword(password, user.password);
       if (!checkPassword) {
-        throw new BusinessLogicError("Password incorrect", [], 401);
+        throw new BusinessLogicError("Password incorrect", [], 500);
+      }
+      if (user.status == 0) {
+        throw new BusinessLogicError("User is disabled", [], 500);
+      }
+      if (user.is_verify == 0) {
+        throw new BusinessLogicError("User is not verify email", [], 500);
       }
       const userResponse = new LoginResponseSchma();
       const accessToken = await this.generateAccessToken(
@@ -86,6 +79,7 @@ class LoginModel extends DatabaseModel {
       userResponse.username = user.username;
       userResponse.email = user.email;
       userResponse.role = user.role;
+      userResponse.is_verify = user.is_verify;
       userResponse.accessToken = accessToken;
       userResponse.refreshToken = refreshToken;
       return userResponse;

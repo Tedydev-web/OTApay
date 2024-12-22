@@ -1,7 +1,5 @@
 "use strict";
-const { verify } = require("jsonwebtoken");
 const getTime = require("../ultils/getTime");
-
 var dbm;
 var type;
 var seed;
@@ -15,29 +13,27 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
-const tableName = "tbl_otapay_user";
+
+const tableName = "tbl_otapay_logger";
 exports.up = async function (db) {
   try {
     await db.createTable(tableName, {
-      id: { type: "int", primaryKey: true, autoIncrement: true },
-      username: { type: "string", length: 100},
-      email: { type: "string", length: 100 },
-      password: { type: "string", length: 255 },
-      verify_token: { type: "string", length: 50 },
-      expired_time: { type: "bigint" },
-      is_verify: { type: "bigint", defaultValue: 0 },
-      role: { type: "string", length: 50 },
-      status: {
-        type: "tinyint",
-        comment: "0 = disabled, 1 = active",
-        notNull: true,
-      },
-      created_at: {
-        type: "bigint",
-        defaultValue: getTime.currenUnix(),
-        notNull: true,
-      },
-      updated_at: { type: "bigint" },
+      id: { type: "bigint", primaryKey: true, autoIncrement: true },
+      timestamp: { type: "bigint", defaultValue: getTime.currenUnix() },
+      method: { type: "varchar", length: 10 },
+      user_id: { type: "int" },
+      level: { type: "varchar", length: 100 },
+      ip_address: { type: "varchar", length: 45 },
+      url: { type: "text" },
+      user_agent: { type: "text" },
+      status_code: { type: "int" },
+      message: { type: "text" },
+      error_message: { type: "text" },
+      metadata: { type: "json" },
+      context: { type: "text" },
+      file_name: { type: "varchar", length: 225 },
+      line_number: { type: "int" },
+      stack_trace: { type: "text" },
     });
     console.log(`Table ${tableName} created successfully.`);
   } catch (error) {

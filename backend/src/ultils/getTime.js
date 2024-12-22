@@ -14,7 +14,7 @@ const getTime = {
     return moment().tz("Asia/Ho_Chi_Minh").valueOf();
   },
   startDateUnix: function () {
-    return moment().tz("Asia/Ho_Chi_Minh").startOf("day").unix();
+    return moment().tz("Asia/Ho_Chi_Minh").startOf("day").valueOf();
   },
   endDate: function () {
     return moment()
@@ -23,7 +23,7 @@ const getTime = {
       .format("YYYY-MM-DD HH:mm:ss");
   },
   endDateUnix: function () {
-    return moment().tz("Asia/Ho_Chi_Minh").endOf("day").unix();
+    return moment().tz("Asia/Ho_Chi_Minh").endOf("day").valueOf();
   },
   currentM: function () {
     return moment().tz("Asia/Ho_Chi_Minh").format("YYYY-MM-DD HH:mm");
@@ -62,7 +62,7 @@ const getTime = {
     return moment(date).tz("Asia/Ho_Chi_Minh").format("HH:mm:ss");
   },
   String2Unit: function (value) {
-    return moment(value).tz("Asia/Ho_Chi_Minh").unix();
+    return moment(value).tz("Asia/Ho_Chi_Minh").valueOf();
   },
   caculateTime: function (totalseconds) {
     const day = 86400;

@@ -13,6 +13,7 @@ app.use(
     action: "deny",
   })
 ); //not a browser should be allowed to render a page in the <frame>, <iframe>, <embed> and <object> HTML elements.
+
 app.use(
   compression({
     level: 6, // level compress
@@ -31,6 +32,9 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json({ limit: "10kb" }));
 app.use(bodyParser.urlencoded({ limit: "10kb", extended: true }));
 
+//set trust proxy for reverse proxy
+app.set("trust proxy", true);
+
 //init db
 const { initDb } = require("./dbs/init.mysql");
 initDb();
@@ -39,10 +43,17 @@ initDb();
 // const { initRedis } = require("./dbs/init.redis");
 // initRedis();
 
+//middleware logger
+const loggerMiddleware = require("./middlewares/logger");
+app.use(loggerMiddleware);
+
 // import routes
 const route = require("./routes");
-
 route(app);
+
+//middleware logger error
+const loggerErrorMiddleware = require("./middlewares/loggerError");
+app.use(loggerErrorMiddleware);
 
 //midleware handle error
 const {

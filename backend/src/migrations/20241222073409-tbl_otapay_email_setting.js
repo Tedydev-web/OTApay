@@ -1,7 +1,5 @@
 "use strict";
-const { verify } = require("jsonwebtoken");
 const getTime = require("../ultils/getTime");
-
 var dbm;
 var type;
 var seed;
@@ -15,28 +13,18 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
-const tableName = "tbl_otapay_user";
+const tableName = "tbl_otapay_email_setting";
 exports.up = async function (db) {
   try {
     await db.createTable(tableName, {
       id: { type: "int", primaryKey: true, autoIncrement: true },
-      username: { type: "string", length: 100},
-      email: { type: "string", length: 100 },
-      password: { type: "string", length: 255 },
-      verify_token: { type: "string", length: 50 },
-      expired_time: { type: "bigint" },
-      is_verify: { type: "bigint", defaultValue: 0 },
-      role: { type: "string", length: 50 },
-      status: {
-        type: "tinyint",
-        comment: "0 = disabled, 1 = active",
-        notNull: true,
-      },
-      created_at: {
-        type: "bigint",
-        defaultValue: getTime.currenUnix(),
-        notNull: true,
-      },
+      mail_from_name: { type: "string", length: 255 },
+      mail_from_address: { type: "string", length: 255 },
+      mail_host: { type: "string", length: 255 },
+      mail_port: { type: "int" },
+      mail_username: { type: "string", length: 255 },
+      mail_password: { type: "string", length: 255 },
+      created_at: { type: "bigint", defaultValue: getTime.currenUnix() },
       updated_at: { type: "bigint" },
     });
     console.log(`Table ${tableName} created successfully.`);
