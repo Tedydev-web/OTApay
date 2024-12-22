@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const configureEnvironment = require("../config/dotenv.config");
 
-const { APP_PASSWORD, GMAIL } = configureEnvironment();
+const { URL_LOGIN } = configureEnvironment();
 const Settings = require("../services/email.setting.service");
 class EmailService {
   constructor() {
@@ -58,6 +58,19 @@ class EmailService {
       </ul>
       <p>Please use the following verification code:</p>
       <p><strong>${activationToken}</strong></p>
+      <p>Alternatively, you can click the button below to verify your account:</p>
+  <a href="${URL_LOGIN}" 
+     style="
+       display: inline-block;
+       padding: 10px 20px;
+       font-size: 16px;
+       color: #fff;
+       background-color: #007BFF;
+       text-decoration: none;
+       border-radius: 5px;
+       margin-top: 10px;">
+     Verify Account
+  </a>
       <p>If you have any questions, feel free to contact us at ${this.emailSettings.mail_from_address}.</p>
       <p>Best regards,<br>${this.emailSettings.mail_from_name}</p>
     `;
