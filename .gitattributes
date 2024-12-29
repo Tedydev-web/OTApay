@@ -64,3 +64,20 @@ yarn.lock binary
 
 # NextJS
 *.svg text eol=lf
+
+# Backend files
+*.php text eol=lf
+*.sql text eol=lf
+*.sh text eol=lf
+
+# Media files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.flv binary
+*.fla binary
+*.swf binary
