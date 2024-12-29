@@ -47,10 +47,10 @@ class UserService {
       }
     }
   }
-  async changePassword(email, old_password, new_password, confirm_password) {
+  async changePassword(userId, old_password, new_password, confirm_password) {
     const { conn } = await db.getConnection();
     try {
-      const user = await UserModel.getUserByEmail(conn, email);
+      const user = await UserModel.getUserByUserId(conn, userId);
       if (!user) {
         throw new BusinessLogicError("User is not existed", [], 500);
       }
@@ -68,8 +68,11 @@ class UserService {
           500
         );
       }
-      const result = UserModel.changePassword(conn, id, confirm_password);
-      return result;
+      const hashedPassword = await hash.hashPassword(new_password);
+      const result = UserModel.changePassword(conn, userId, hashedPassword);
+      return {
+        message: "Password updated successfully",
+      };
     } catch (error) {
       throw error;
     } finally {
@@ -97,6 +100,45 @@ class UserService {
         user.id,
         await hash.hashPassword(new_password)
       );
+      return result;
+    } catch (error) {
+      throw error;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+  async updateUserStatus(id) {
+    const { conn } = await db.getConnection();
+    try {
+      const result = UserModel.updateUserStatus(conn, id);
+      return result;
+    } catch (error) {
+      throw error;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+  async getUserByUserId(userId) {
+    const { conn } = await db.getConnection();
+    try {
+      const result = UserModel.getUserByUserId(conn, userId);
+      return result;
+    } catch (error) {
+      throw error;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+  async getUserByEmail(email) {
+    const { conn } = await db.getConnection();
+    try {
+      const result = UserModel.getUserByEmail(conn, email);
       return result;
     } catch (error) {
       throw error;
