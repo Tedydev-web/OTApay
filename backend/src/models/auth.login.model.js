@@ -1,4 +1,4 @@
-const LoginResponseSchma = require("./schema/loginResponse.schema");
+const LoginResponseSchema = require("./schema/loginResponse.schema");
 const DatabaseModel = require("./database.model");
 const { BusinessLogicError } = require("../core/error.response");
 const configureEnvironment = require("../config/dotenv.config");
@@ -11,37 +11,50 @@ const {
   REFRESH_TOKEN_EXPIRES_IN,
 } = configureEnvironment();
 const jwt = require("jsonwebtoken");
+const userTokensModel = require("./userTokens.model");
+const getTime = require("../ultils/getTime");
+
 class LoginModel extends DatabaseModel {
   constructor() {
     super();
   }
 
-  async generateAccessToken(username, email, role) {
+  async generateAccessToken(con, user_id, username, email, role) {
     try {
       const accessToken = jwt.sign(
-        {
-          username: username,
-          email: email,
-          role: role,
-        }, // Payload
+        { userId: user_id, username: username, email: email, role: role }, // Payload
         ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+      );
+      const decoded = jwt.decode(accessToken);
+      const expirationTimeInMilliseconds = decoded.exp * 1000;
+      await await userTokensModel.addNewToken(
+        con,
+        user_id,
+        accessToken,
+        expirationTimeInMilliseconds,
+        "access_token"
       );
       return accessToken;
     } catch (e) {
       throw e;
     }
   }
-  async generateRefreshToken(username, email, role) {
+  async generateRefreshToken(con, user_id, username, email, role) {
     try {
       const refreshToken = jwt.sign(
-        {
-          username: username,
-          email: email,
-          role: role,
-        },
+        { userId: user_id, username: username, email: email, role: role },
         REFRESH_TOKEN_SECRET,
         { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+      );
+      const decoded = jwt.decode(refreshToken);
+      const expirationTimeInMilliseconds = decoded.exp * 1000;
+      await await userTokensModel.addNewToken(
+        con,
+        user_id,
+        refreshToken,
+        expirationTimeInMilliseconds,
+        "refresh_token"
       );
       return refreshToken;
     } catch (e) {
@@ -64,13 +77,17 @@ class LoginModel extends DatabaseModel {
       if (user.is_verify == 0) {
         throw new BusinessLogicError("User is not verify email", [], 500);
       }
-      const userResponse = new LoginResponseSchma();
+      const userResponse = new LoginResponseSchema();
       const accessToken = await this.generateAccessToken(
+        con,
+        user.id,
         user.username,
         user.email,
         user.role
       );
       const refreshToken = await this.generateRefreshToken(
+        con,
+        user.id,
         user.username,
         user.email,
         user.role

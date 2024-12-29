@@ -5,7 +5,6 @@ const userSchema = require("./schema/user.schema");
 const crypto = require("crypto");
 const getTime = require("../ultils/getTime");
 const emailService = require("../ultils/email");
-const { up } = require("../migrations/20241222073409-tbl_otapay_email_setting");
 class UserModel extends DatabaseModel {
   constructor() {
     super();
@@ -18,6 +17,20 @@ class UserModel extends DatabaseModel {
         "id, username, email, password, role, verify_token, expired_time, is_verify, status, created_at, updated_at",
         "email = ?",
         [email]
+      );
+      return result[0];
+    } catch (e) {
+      throw e;
+    }
+  }
+  async getUserByUserId(con, userId) {
+    try {
+      const result = await this.select(
+        con,
+        tableName.tableUser,
+        "id, username, email, password, role, verify_token, expired_time, is_verify, status, created_at, updated_at",
+        "id = ?",
+        [userId]
       );
       return result[0];
     } catch (e) {
@@ -145,6 +158,38 @@ class UserModel extends DatabaseModel {
       );
       return {
         message: "Password updated successfully",
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
+  async updateUserStatus(con, id) {
+    try {
+      const user = await this.getUserByUserId(con, id);
+      if (!user) {
+        throw new BusinessLogicError("User not found", [], 404);
+      }
+      if (user.role === "admin") {
+        throw new BusinessLogicError("Cannot update status of admin", [], 500);
+      }
+      let status = 0;
+      if (user.status === 1) {
+        status = 0;
+      } else {
+        status = 1;
+      }
+      const result = await this.update(
+        con,
+        tableName.tableUser,
+        {
+          status: status,
+          updated_at: getTime.currenUnix(),
+        },
+        "id",
+        [id]
+      );
+      return {
+        message: "User status updated successfully",
       };
     } catch (e) {
       throw e;

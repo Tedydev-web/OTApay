@@ -18,9 +18,10 @@ class UserService {
     GET(res, result);
   });
   changePassword = catchAsync(async (req, res, next) => {
-    const { email, old_password, new_password, confirm_password } = req.body;
+    const userId = req.user.id;
+    const { old_password, new_password, confirm_password } = req.body;
     const result = await userService.changePassword(
-      email,
+      userId,
       old_password,
       new_password,
       confirm_password
@@ -35,6 +36,29 @@ class UserService {
       confirm_password
     );
     CREATED(res, result);
+  });
+  updateUserStatus = catchAsync(async (req, res, next) => {
+    const id = req.params.id;
+    const result = await userService.updateUserStatus(id);
+    UPDATE(res, result);
+  });
+  getUserByUserId = catchAsync(async (req, res, next) => {
+    const userId = req.params.id;
+    const result = await userService.getUserByUserId(userId);
+    delete result.password;
+    GET(res, result);
+  });
+  getUserByToken = catchAsync(async (req, res, next) => {
+    const userId = req.user.id;
+    const result = await userService.getUserByUserId(userId);
+    delete result.password;
+    GET(res, result);
+  });
+  getUserByEmail = catchAsync(async (req, res, next) => {
+    const email = req.params.email;
+    const result = await userService.getUserByEmail(email);
+    delete result.password;
+    GET(res, result);
   });
 }
 module.exports = new UserService();

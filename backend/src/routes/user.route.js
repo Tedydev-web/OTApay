@@ -6,6 +6,9 @@ const {
 } = require("../constants/msg.constant");
 const UserController = require("../controllers/user.controller");
 const { body, query, param } = require("express-validator");
+const authentication = require("../middlewares/authentication");
+const authorization = require("../middlewares/authorization");
+const moduleName = require("../constants/moduleName.constant");
 
 module.exports = (app) => {
   router.post(
@@ -17,6 +20,8 @@ module.exports = (app) => {
         .withMessage(VALIDATE_DATA)
         .escape(),
     ],
+    authentication,
+    authorization(moduleName.userCreate),
     UserController.createNewUser
   );
   router.post(
@@ -49,11 +54,6 @@ module.exports = (app) => {
   router.put(
     "/change-password",
     [
-      body("email", NOT_EMPTY)
-        .notEmpty()
-        .isEmail()
-        .withMessage(VALIDATE_DATA)
-        .escape(),
       body("old_password", NOT_EMPTY)
         .notEmpty()
         .isNumeric()
@@ -74,6 +74,7 @@ module.exports = (app) => {
         .withMessage("Password length is minimum 6 and maximum 16")
         .escape(),
     ],
+    authentication,
     UserController.changePassword
   );
   router.put(
@@ -86,20 +87,47 @@ module.exports = (app) => {
         .escape(),
       body("new_password", NOT_EMPTY)
         .notEmpty()
-        .isNumeric()
+        .isString()
         .withMessage(VALIDATE_DATA)
         .isLength({ min: 6, max: 16 })
-        .withMessage("Password length is minimum 6 and maximum 16")
-        .escape(),
+        .withMessage("Password length is minimum 6 and maximum 16"),
       body("confirm_password", NOT_EMPTY)
         .notEmpty()
-        .isNumeric()
+        .isString()
         .withMessage(VALIDATE_DATA)
         .isLength({ min: 6, max: 16 })
-        .withMessage("Password length is minimum 6 and maximum 16")
-        .escape(),
+        .withMessage("Password length is minimum 6 and maximum 16"),
     ],
     UserController.createPassword
   );
+  router.put(
+    "/update-user-status/:id",
+    [],
+    authentication,
+    authorization(moduleName.userUpdateStatus),
+    UserController.updateUserStatus
+  );
+  router.get(
+    "/get-user-by-id/:id",
+    [],
+    authentication,
+    authorization(moduleName.userGet),
+    UserController.getUserByUserId
+  );
+  router.get(
+    "/get-user-by-token",
+    [],
+    authentication,
+    UserController.getUserByToken
+  );
+  router.get(
+    "/get-user-by-email/:email",
+    [],
+    authentication,
+    authorization(moduleName.userGet),
+    UserController.getUserByEmail
+  );
+  // router.get("/get-list-user");
+  // router.patch("/update-user");
   app.use("/api/v1/user", router);
 };
