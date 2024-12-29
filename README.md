@@ -1,3 +1,0 @@
-# OTApay
-# OTApay
-# OTApay
