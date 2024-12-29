@@ -1,11 +1,8 @@
 const loginController = require("../../controllers/login.controller");
 const router = require("express").Router();
-const {
-  VALIDATE_DATA,
-  NOT_EMPTY,
-  INVALID_IS_DELETED,
-} = require("../../constants/msg.constant");
-const { body, query, param } = require("express-validator");
+const { body } = require("express-validator");
+const { NOT_EMPTY, VALIDATE_DATA } = require("../../constants/msg.constant");
+
 module.exports = (app) => {
   router.post(
     "/login",
@@ -23,5 +20,6 @@ module.exports = (app) => {
     ],
     loginController.login
   );
+  
   app.use("/api/v1/user/auth", router);
 };
