@@ -1,6 +1,6 @@
 import React from 'react';
 
-function HorizonLogo() {
+function otapayLogo() {
   return (
     <g fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -11,4 +11,4 @@ function HorizonLogo() {
   );
 }
 
-export default HorizonLogo;
+export default otapayLogo;

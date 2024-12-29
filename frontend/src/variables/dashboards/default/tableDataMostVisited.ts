@@ -8,35 +8,35 @@ type RowObj = {
 
 const tableDataComplex: RowObj[] = [
   {
-    pageName: 'Marketplace',
+    pageName: 'Project 01',
     visitors: '4.847',
     unique: '3.455',
     clients: '439',
     bounceRate: '+2.45%',
   },
   {
-    pageName: 'Horizon UI Dashboard',
+    pageName: 'Project 02',
     visitors: '4.034',
     unique: '2.943',
     clients: '427',
     bounceRate: '-9.45%',
   },
   {
-    pageName: 'Venus Design System',
+    pageName: 'Project 03',
     visitors: '3.502',
     unique: '2.478',
     clients: '403',
     bounceRate: '+7.87%',
   },
   {
-    pageName: 'Chakra UI Design',
+    pageName: 'Project 04',
     visitors: '3.323',
     unique: '2.336',
     clients: '397',
     bounceRate: '-1.44%',
   },
   {
-    pageName: 'Simmmple Company',
+    pageName: 'Project 05',
     visitors: '3.244',
     unique: '2.302',
     clients: '287',

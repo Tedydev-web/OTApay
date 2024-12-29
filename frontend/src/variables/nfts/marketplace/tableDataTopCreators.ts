@@ -43,7 +43,7 @@ const tableColumnsTopCreators: RowObj[] = [
     rating: 55,
   },
   {
-    name: ['@horizon.ui', 'https://i.ibb.co/NSJYQYD/Horizon-UI-Avatar.png'],
+    name: ['@otapay.vn', 'https://i.ibb.co/NSJYQYD/otapay-UI-Avatar.png'],
     artworks: 3152,
     rating: 46,
   },

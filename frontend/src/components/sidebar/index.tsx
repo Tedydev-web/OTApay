@@ -2,11 +2,9 @@
 
 import { HiX } from 'react-icons/hi';
 import Links from './components/Links';
-
-import SidebarCard from 'components/sidebar/components/SidebarCard';
 import { IRoute } from 'types/navigation';
 
-function SidebarHorizon(props: { routes: IRoute[]; [x: string]: any }) {
+function SidebarOtapay(props: { routes: IRoute[]; [x: string]: any }) {
   const { routes, open, setOpen } = props;
   return (
     <div
@@ -23,7 +21,7 @@ function SidebarHorizon(props: { routes: IRoute[]; [x: string]: any }) {
 
       <div className={`mx-[56px] mt-[50px] flex items-center`}>
         <div className="ml-1 mt-1 h-2.5 font-poppins text-[26px] font-bold uppercase text-navy-700 dark:text-white">
-          Horizon <span className="font-medium">FREE</span>
+          OTA <span className="font-medium">Pay</span>
         </div>
       </div>
       <div className="mb-7 mt-[58px] h-px bg-gray-300 dark:bg-white/30" />
@@ -33,14 +31,9 @@ function SidebarHorizon(props: { routes: IRoute[]; [x: string]: any }) {
         <Links routes={routes} />
       </ul>
 
-      {/* Free Horizon Card */}
-      <div className="flex justify-center">
-        <SidebarCard />
-      </div>
-
       {/* Nav item end */}
     </div>
   );
 }
 
-export default SidebarHorizon;
+export default SidebarOtapay;
