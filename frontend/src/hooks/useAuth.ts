@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from 'services/auth.service';
 
@@ -48,4 +48,22 @@ export function useAuth(requireAuth: boolean = true) {
       });
     };
   }, [router, requireAuth]);
-} 
+}
+
+export const useAuthStatus = () => {
+  const [status, setStatus] = useState({
+    isLoading: true,
+    isAuthenticated: false,
+    user: null,
+    error: null
+  });
+
+  // Thêm loading states
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Thêm thông báo
+  const showAuthNotification = (type: 'success' | 'error', message: string) => {
+    // Implement notification logic
+  };
+}; 

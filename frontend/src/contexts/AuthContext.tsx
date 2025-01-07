@@ -12,6 +12,22 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const SessionManager = {
+  checkSession() {
+    const lastActivity = localStorage.getItem('lastActivity');
+    const sessionTimeout = 30 * 60 * 1000; // 30 phút
+    
+    if (lastActivity && Date.now() - parseInt(lastActivity) > sessionTimeout) {
+      return false;
+    }
+    return true;
+  },
+
+  updateLastActivity() {
+    localStorage.setItem('lastActivity', Date.now().toString());
+  }
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);

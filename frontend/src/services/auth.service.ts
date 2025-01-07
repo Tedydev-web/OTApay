@@ -196,6 +196,36 @@ export const authService = {
         return Promise.reject(error);
       }
     );
+  },
+
+  async sendResetPasswordOTP(email: string) {
+    try {
+      if (!email) {
+        throw new Error('Email là bắt buộc');
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new Error('Email không hợp lệ');
+      }
+
+      // Sử dụng lại API create user để gửi OTP
+      const response = await axios.post(`${API_URL}/user/create`, {
+        email
+      });
+
+      if (!response.data) {
+        throw new Error('Không nhận được phản hồi từ server');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 429) {
+        throw new Error('Vui lòng đợi trước khi gửi lại mã');
+      }
+      throw new Error(error?.response?.data?.message || error.message || 'Gửi mã xác thực thất bại');
+    }
   }
 };
 
@@ -219,5 +249,46 @@ export const signIn = async (email: string, password: string) => {
     }
   } catch (error) {
     throw error;
+  }
+};
+
+const tokenService = {
+  // Thêm refresh token handling
+  async refreshAccessToken() {
+    try {
+      const refreshToken = Cookies.get('refreshToken');
+      const response = await axios.post(`${API_URL}/auth/refresh-token`, {
+        refreshToken
+      });
+      
+      if (response.data?.accessToken) {
+        Cookies.set('accessToken', response.data.accessToken, {
+          secure: true,
+          sameSite: 'strict'
+        });
+        return response.data.accessToken;
+      }
+      throw new Error('Refresh token failed');
+    } catch (error) {
+      await authService.logout();
+      throw error;
+    }
+  },
+
+  // Thêm token rotation
+  async rotateRefreshToken() {
+    // Implement token rotation logic
+  }
+};
+
+const twoFactorAuth = {
+  async setup2FA() {
+    const response = await axios.post(`${API_URL}/auth/2fa/setup`);
+    return response.data.qrCode;
+  },
+
+  async verify2FA(code: string) {
+    const response = await axios.post(`${API_URL}/auth/2fa/verify`, { code });
+    return response.data;
   }
 };

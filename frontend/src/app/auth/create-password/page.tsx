@@ -9,6 +9,7 @@ export default function CreatePassword() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
+  const mode = searchParams.get('mode');
 
   const [formData, setFormData] = useState({
     password: '',
@@ -54,10 +55,13 @@ export default function CreatePassword() {
         <div className="flex h-full min-h-screen w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:justify-start">
           <div className="w-full max-w-[420px] rounded-[20px] bg-white/10 p-8 shadow-xl backdrop-blur-md dark:bg-navy-800/90">
             <h3 className="mb-2 text-center text-2xl font-semibold text-brand-500 dark:text-white">
-              Tạo mật khẩu mới
+              {mode === 'reset' ? 'Đặt lại mật khẩu' : 'Tạo mật khẩu mới'}
             </h3>
             <p className="mb-8 text-center text-sm text-gray-600 dark:text-gray-400">
-              Vui lòng tạo mật khẩu mới cho tài khoản của bạn
+              {mode === 'reset' 
+                ? 'Vui lòng nhập mật khẩu mới cho tài khoản của bạn'
+                : 'Vui lòng tạo mật khẩu mới cho tài khoản của bạn'
+              }
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">

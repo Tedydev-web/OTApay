@@ -6,7 +6,9 @@ import { authService } from 'services/auth.service';
 
 function VerifyCode() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email');
+  const mode = searchParams.get('mode');
   const [verifyCode, setVerifyCode] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,7 +108,11 @@ function VerifyCode() {
         await new Promise(resolve => setTimeout(resolve, 500));
         
         const encodedEmail = encodeURIComponent(email);
-        router.push(`/auth/create-password?email=${encodedEmail}`);
+        if (mode === 'reset-password') {
+          router.push(`/auth/create-password?email=${encodedEmail}&mode=reset`);
+        } else {
+          router.push(`/auth/create-password?email=${encodedEmail}`);
+        }
       }
     } catch (err: any) {
       setError(err?.message || 'Xác thực thất bại');
@@ -151,7 +157,7 @@ function VerifyCode() {
         <div className="flex h-full min-h-screen w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:justify-start">
           <div className="w-full max-w-[420px] rounded-[20px] bg-white/10 backdrop-blur-md p-8 shadow-xl dark:bg-navy-800/90">
             <h3 className="mb-2 text-2xl font-semibold text-brand-500 dark:text-white text-center">
-              Xác thực tài khoản
+              {mode === 'reset-password' ? 'Xác thực đặt lại mật khẩu' : 'Xác thực tài khoản'}
             </h3>
             <p className="mb-8 text-sm text-gray-600 dark:text-gray-400 text-center">
               Vui lòng nhập mã xác thực đã được gửi đến email của bạn

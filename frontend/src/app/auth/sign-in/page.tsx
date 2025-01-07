@@ -7,6 +7,7 @@ import { FcGoogle } from 'react-icons/fc';
 import Checkbox from 'components/checkbox';
 import { authService } from 'services/auth.service';
 import { useAuth } from 'contexts/AuthContext';
+import Link from 'next/link';
 
 function SignInDefault() {
   const router = useRouter();
@@ -120,9 +121,12 @@ function SignInDefault() {
                   />
                   Ghi nhớ tôi
                 </label>
-                <a href="#" className="text-sm text-brand-500 hover:text-brand-600">
+                <Link 
+                  href="/auth/forgot-password"
+                  className="text-sm text-brand-500 hover:text-brand-600"
+                >
                   Quên mật khẩu?
-                </a>
+                </Link>
               </div>
 
               <button
