@@ -53,10 +53,11 @@ function SignInDefault() {
         formData.rememberMe
       );
       
-      if (response.result) {
+      if (response?.result) {
         await new Promise(resolve => setTimeout(resolve, 100));
-        
         router.replace('/admin/default');
+      } else {
+        throw new Error('Đăng nhập thất bại');
       }
     } catch (err: any) {
       setError(err?.message || 'Đăng nhập thất bại');

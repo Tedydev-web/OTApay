@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from 'services/auth.service';
+import { tokenService } from 'services/token.service';
 
 export function useAuth(requireAuth: boolean = true) {
   const router = useRouter();
+  const [isTokenChecking, setIsTokenChecking] = useState(true);
 
   useEffect(() => {
     let inactivityTimeout: NodeJS.Timeout;
@@ -18,22 +20,28 @@ export function useAuth(requireAuth: boolean = true) {
 
     const checkAuth = async () => {
       try {
-        const user = authService.getCurrentUser();
-        if (requireAuth && !user) {
+        const token = tokenService.getAccessToken();
+        if (requireAuth && !token) {
           router.push('/auth/sign-in');
           return;
         }
 
-        // Kiểm tra token với server
-        await authService.validateToken();
+        if (token && tokenService.isTokenExpired(token)) {
+          // Tự động refresh token nếu hết hạn
+          await tokenService.refreshAccessToken();
+        }
+
         resetInactivityTimer();
       } catch (error) {
-        await authService.logout();
-        router.push('/auth/sign-in');
+        if (requireAuth) {
+          await authService.logout();
+          router.push('/auth/sign-in');
+        }
+      } finally {
+        setIsTokenChecking(false);
       }
     };
 
-    // Event listeners cho user activity
     const events = ['mousedown', 'keydown', 'mousemove', 'wheel'];
     events.forEach(event => {
       document.addEventListener(event, resetInactivityTimer);
@@ -48,6 +56,8 @@ export function useAuth(requireAuth: boolean = true) {
       });
     };
   }, [router, requireAuth]);
+
+  return { isTokenChecking };
 }
 
 export const useAuthStatus = () => {

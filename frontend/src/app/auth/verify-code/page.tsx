@@ -170,20 +170,11 @@ function VerifyCode() {
                 <div
                   className={`mb-3 text-center text-sm ${
                     error.includes('hết hạn')
-                      ? 'text-yellow-500'
+                      ? 'text-red-500'
                       : 'text-red-500'
                   }`}
                 >
                   {error}
-                  {error.includes('hết hạn') && (
-                    <button
-                      type="button"
-                      onClick={handleResendCode}
-                      className="ml-2 underline hover:text-yellow-600"
-                    >
-                      Gửi lại mã
-                    </button>
-                  )}
                 </div>
               )}
 

@@ -23,32 +23,45 @@ export const authService = {
         password
       });
 
-      if (response.data?.accessToken) {
-        // Lưu token với httpOnly cookie
+      if (response.data) {
+        // Lưu access token với thời hạn phù hợp
         Cookies.set('accessToken', response.data.accessToken, {
           secure: true,
           sameSite: 'strict',
-          expires: remember ? 7 : 1,
+          expires: remember ? 7 : 1, // 7 ngày nếu remember, 1 ngày nếu không
+          path: '/'
+        });
+
+        // Lưu refresh token với thời hạn dài hơn
+        Cookies.set('refreshToken', response.data.refreshToken, {
+          secure: true,
+          sameSite: 'strict',
+          expires: 30, // 30 ngày
           path: '/'
         });
 
         // Lưu user data
         const userData = {
-          id: response.data.user.id,
-          email: response.data.user.email,
-          role: response.data.user.role,
-          name: response.data.user.name
+          id: response.data.id,
+          email: response.data.email,
+          role: response.data.role,
+          username: response.data.username,
+          is_verify: response.data.is_verify
         };
         localStorage.setItem('user', JSON.stringify(userData));
-        
+
+        // Xử lý remember me
         if (remember) {
           localStorage.setItem('rememberedEmail', email);
           localStorage.setItem('rememberMe', 'true');
+        } else {
+          localStorage.removeItem('rememberedEmail');
+          localStorage.removeItem('rememberMe');
         }
 
         return response.data;
       }
-      throw new Error('Không nhận được token');
+      throw new Error('Không nhận được phản hồi từ server');
     } catch (error: any) {
       if (error.response?.status === 401) {
         throw new Error('Email hoặc mật khẩu không chính xác');
@@ -174,6 +187,7 @@ export const authService = {
 
   // Thêm middleware kiểm tra token
   setupAxiosInterceptors() {
+    // Request interceptor
     axios.interceptors.request.use(
       (config) => {
         const token = Cookies.get('accessToken');
@@ -185,13 +199,75 @@ export const authService = {
       (error) => Promise.reject(error)
     );
 
+    // Response interceptor
+    let isRefreshing = false;
+    let failedQueue: any[] = [];
+
+    const processQueue = (error: any, token: string | null = null) => {
+      failedQueue.forEach(prom => {
+        if (error) {
+          prom.reject(error);
+        } else {
+          prom.resolve(token);
+        }
+      });
+      failedQueue = [];
+    };
+
     axios.interceptors.response.use(
       (response) => response,
       async (error) => {
-        if (error.response?.status === 401) {
-          // Token hết hạn hoặc không hợp lệ
-          await this.logout();
-          window.location.href = '/auth/sign-in';
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          if (isRefreshing) {
+            return new Promise((resolve, reject) => {
+              failedQueue.push({ resolve, reject });
+            })
+              .then(token => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return axios(originalRequest);
+              })
+              .catch(err => Promise.reject(err));
+          }
+
+          originalRequest._retry = true;
+          isRefreshing = true;
+
+          try {
+            const refreshToken = Cookies.get('refreshToken');
+            if (!refreshToken) {
+              throw new Error('No refresh token');
+            }
+
+            const response = await axios.post(`${API_URL}/token/refresh-token`, {
+              refreshToken
+            });
+
+            if (response?.data?.accessToken) {
+              // Lưu token mới
+              Cookies.set('accessToken', response.data.accessToken, {
+                secure: true,
+                sameSite: 'strict',
+                expires: 1,
+                path: '/'
+              });
+
+              // Cập nhật token cho request hiện tại
+              originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+              
+              processQueue(null, response.data.accessToken);
+              return axios(originalRequest);
+            }
+          } catch (refreshError) {
+            processQueue(refreshError, null);
+            // Logout nếu refresh token thất bại
+            await this.logout();
+            window.location.href = '/auth/sign-in';
+            return Promise.reject(refreshError);
+          } finally {
+            isRefreshing = false;
+          }
         }
         return Promise.reject(error);
       }

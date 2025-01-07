@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authService } from '@/services/auth.service';
-import Default from '@/components/auth/default';
+import { authService } from 'services/auth.service';
+import Default from 'components/auth/variants/DefaultAuthLayout';
 
 export default function ForgotPassword() {
   const router = useRouter();

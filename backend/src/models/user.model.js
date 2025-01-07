@@ -55,7 +55,7 @@ class UserModel extends DatabaseModel {
       }
       const token = await this.generateRandomString(6);
       const currentTime = getTime.currenUnix();
-      const expired_time = currentTime + 30 * 1000;
+      const expired_time = currentTime + 60 * 1000;
       const userSchemaData = new userSchema();
       userSchemaData.email = email;
       userSchemaData.verify_token = token;

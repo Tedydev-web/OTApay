@@ -43,14 +43,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authService.login(email, password, remember);
       
-      if (response?.accessToken) {
-        // Lưu user data vào context state
-        setUser(response.user);
+      if (response) {
+        const userData = {
+          id: response.id,
+          email: response.email,
+          role: response.role,
+          username: response.username,
+          is_verify: response.is_verify
+        };
+        setUser(userData);
         
-        // Đảm bảo token được lưu trước khi chuyển hướng
         await new Promise(resolve => setTimeout(resolve, 100));
         
-        return { result: true };
+        return { 
+          result: true,
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken 
+        };
       }
       return { result: false };
     } catch (error) {
