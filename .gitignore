@@ -206,3 +206,4 @@ frontend/.next/static/webpack/633457081244afec._.hot-update.json
 frontend/.next/types/app/layout.ts
 frontend/.next/types/app/admin/layout.ts
 frontend/.next/types/app/admin/default/page.ts
+.DS_Store
