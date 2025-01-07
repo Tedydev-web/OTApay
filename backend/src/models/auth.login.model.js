@@ -65,17 +65,17 @@ class LoginModel extends DatabaseModel {
     try {
       const user = await userModel.getUserByEmail(con, email);
       if (!user) {
-        throw new BusinessLogicError("User not found", [], 500);
+        throw new BusinessLogicError("Người dùng không được tìm thấy", [], 500);
       }
       const checkPassword = await hash.checkPassword(password, user.password);
       if (!checkPassword) {
-        throw new BusinessLogicError("Password incorrect", [], 500);
+        throw new BusinessLogicError("Mật khẩu không chính xác", [], 500);
       }
       if (user.status == 0) {
-        throw new BusinessLogicError("User is disabled", [], 500);
+        throw new BusinessLogicError("Người dùng đã bị vô hiệu hóa", [], 500);
       }
       if (user.is_verify == 0) {
-        throw new BusinessLogicError("User is not verify email", [], 500);
+        throw new BusinessLogicError("Người dùng không xác thực email", [], 500);
       }
       const userResponse = new LoginResponseSchema();
       const accessToken = await this.generateAccessToken(
