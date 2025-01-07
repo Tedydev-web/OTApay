@@ -48,7 +48,7 @@ class EmailService {
     if (this.emailSettings === null) {
       this.emailSettings = await Settings.getEmailSetting();
     }
-    const urlEmail = URL_LOGIN + `?${toEmail}`
+    const urlEmail = URL_LOGIN + `?email=${toEmail}`
     const subject = "Account Information and Verification";
     const html = `
       <h1>Hello, ${toEmail}!</h1>
