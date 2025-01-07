@@ -48,7 +48,7 @@ class EmailService {
     if (this.emailSettings === null) {
       this.emailSettings = await Settings.getEmailSetting();
     }
-
+    const urlEmail = URL_LOGIN + `?${toEmail}`
     const subject = "Account Information and Verification";
     const html = `
       <h1>Hello, ${toEmail}!</h1>
@@ -59,7 +59,7 @@ class EmailService {
       <p>Please use the following verification code:</p>
       <p><strong>${activationToken}</strong></p>
       <p>Alternatively, you can click the button below to verify your account:</p>
-  <a href="${URL_LOGIN}" 
+  <a href="${urlEmail}" 
      style="
        display: inline-block;
        padding: 10px 20px;
