@@ -71,7 +71,7 @@ export default function ForgotPassword() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-xl border border-gray-200 bg-white/50 p-3 text-sm outline-none focus:border-brand-500 dark:border-navy-600 dark:bg-navy-700/50"
-                  placeholder="example@gmail.com"
+                  placeholder="Nhập email của bạn"
                   required
                 />
               </div>

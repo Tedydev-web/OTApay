@@ -155,19 +155,25 @@ function VerifyCode() {
     <Default
       maincard={
         <div className="flex h-full min-h-screen w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:justify-start">
-          <div className="w-full max-w-[420px] rounded-[20px] bg-white/10 backdrop-blur-md p-8 shadow-xl dark:bg-navy-800/90">
-            <h3 className="mb-2 text-2xl font-semibold text-brand-500 dark:text-white text-center">
-              {mode === 'reset-password' ? 'Xác thực đặt lại mật khẩu' : 'Xác thực tài khoản'}
+          <div className="w-full max-w-[420px] rounded-[20px] bg-white/10 p-8 shadow-xl backdrop-blur-md dark:bg-navy-800/90">
+            <h3 className="mb-2 text-center text-2xl font-semibold text-brand-500 dark:text-white">
+              {mode === 'reset-password'
+                ? 'Xác thực đặt lại mật khẩu'
+                : 'Xác thực tài khoản'}
             </h3>
-            <p className="mb-8 text-sm text-gray-600 dark:text-gray-400 text-center">
+            <p className="mb-8 text-center text-sm text-gray-600 dark:text-gray-400">
               Vui lòng nhập mã xác thực đã được gửi đến email của bạn
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {error && (
-                <div className={`mb-3 text-sm text-center ${
-                  error.includes('hết hạn') ? 'text-yellow-500' : 'text-red-500'
-                }`}>
+                <div
+                  className={`mb-3 text-center text-sm ${
+                    error.includes('hết hạn')
+                      ? 'text-yellow-500'
+                      : 'text-red-500'
+                  }`}
+                >
                   {error}
                   {error.includes('hết hạn') && (
                     <button
@@ -183,17 +189,18 @@ function VerifyCode() {
 
               {/* Email Input */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm text-gray-600 dark:text-gray-400">Email</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">
+                  Email
+                </label>
                 <input
                   type="email"
                   value={email}
-                  onChange={handleEmailChange}
-                  className="w-full rounded-xl border border-gray-200 bg-white/50 p-3 text-sm outline-none focus:border-brand-500 dark:border-navy-600 dark:bg-navy-700/50"
-                  placeholder="example@gmail.com"
+                  readOnly
+                  className="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm outline-none dark:border-navy-600 dark:bg-navy-700/50"
                   required
                 />
               </div>
-              
+
               {/* Verify Code Inputs */}
               <div className="flex justify-center gap-2">
                 {verifyCode.map((digit, index) => (
@@ -206,7 +213,7 @@ function VerifyCode() {
                     onChange={(e) => handleChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     onPaste={handlePaste}
-                    className="w-12 h-12 text-center text-xl font-semibold rounded-xl border border-gray-200 bg-white/50 outline-none focus:border-brand-500 dark:border-navy-600 dark:bg-navy-700/50"
+                    className="h-12 w-12 rounded-xl border border-gray-200 bg-white/50 text-center text-xl font-semibold outline-none focus:border-brand-500 dark:border-navy-600 dark:bg-navy-700/50"
                     required
                   />
                 ))}
@@ -215,7 +222,7 @@ function VerifyCode() {
               <button
                 type="submit"
                 disabled={loading || verifyCode.join('').length !== 6 || !email}
-                className="mt-4 w-full rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition-all hover:bg-brand-600 active:bg-brand-700 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="mt-4 w-full rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition-all hover:bg-brand-600 active:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? 'Đang xác thực...' : 'Xác thực'}
               </button>
@@ -224,9 +231,11 @@ function VerifyCode() {
                 type="button"
                 onClick={handleResendCode}
                 disabled={!canResend || loading || !email}
-                className="mt-2 text-sm text-brand-500 hover:text-brand-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-2 text-sm text-brand-500 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {canResend ? 'Gửi lại mã xác thực' : `Gửi lại sau ${countdown}s`}
+                {canResend
+                  ? 'Gửi lại mã xác thực'
+                  : `Gửi lại sau ${countdown}s`}
               </button>
             </form>
           </div>

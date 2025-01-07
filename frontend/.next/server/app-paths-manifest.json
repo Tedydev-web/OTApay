@@ -1,1 +1,4 @@
-{}
+{
+  "/auth/verify-code/page": "app/auth/verify-code/page.js",
+  "/auth/sign-in/page": "app/auth/sign-in/page.js"
+}

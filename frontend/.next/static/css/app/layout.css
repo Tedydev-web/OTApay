@@ -1181,6 +1181,9 @@ html {
 .cursor-pointer{
   cursor: pointer;
 }
+.cursor-not-allowed{
+  cursor: not-allowed;
+}
 .select-none{
   -webkit-user-select: none;
           user-select: none;
@@ -1489,6 +1492,10 @@ html {
 .bg-yellow-500{
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity, 1));
+}
+.bg-gray-100{
+  --tw-bg-opacity: 1;
+  background-color: rgb(238 240 246 / var(--tw-bg-opacity, 1));
 }
 .bg-gradient-to-b{
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));

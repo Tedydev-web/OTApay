@@ -1,29 +1,40 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import rateLimit from 'express-rate-limit';
+import { RateLimiter } from 'limiter';
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 phút
-  max: 5, // Giới hạn 5 lần thử đăng nhập
-  message: 'Quá nhiều yêu cầu, vui lòng thử lại sau'
-});
+// Tạo một Map để lưu trữ limiters cho mỗi IP
+const limiters = new Map<string, RateLimiter>();
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get('accessToken');
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/auth');
-
-  if (isAdminRoute && !token) {
-    return NextResponse.redirect(new URL('/auth/sign-in', request.url));
+export async function middleware(request: NextRequest) {
+  const ip = request.ip ?? '127.0.0.1';
+  
+  // Tạo limiter mới nếu chưa có cho IP này
+  if (!limiters.has(ip)) {
+    // Cho phép 100 requests trong 15 phút
+    limiters.set(ip, new RateLimiter({
+      tokensPerInterval: 100,
+      interval: 15 * 60 * 1000
+    }));
   }
+  
+  const limiter = limiters.get(ip)!;
+  const hasToken = await limiter.tryRemoveTokens(1);
 
-  if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL('/admin/default', request.url));
+  if (!hasToken) {
+    return new NextResponse(JSON.stringify({ 
+      error: 'Too many requests' 
+    }), { 
+      status: 429,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   return NextResponse.next();
 }
 
+// Chỉ định các routes cần áp dụng rate limiting
 export const config = {
-  matcher: ['/admin/:path*', '/auth/:path*']
-}; 
+  matcher: '/api/:path*'
+}
