@@ -51,8 +51,11 @@ function SignInDefault() {
         formData.password, 
         formData.rememberMe
       );
+      
       if (response.result) {
-        router.push('/admin/default');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        router.replace('/admin/default');
       }
     } catch (err: any) {
       setError(err?.message || 'Đăng nhập thất bại');
