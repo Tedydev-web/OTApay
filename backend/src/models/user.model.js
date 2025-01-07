@@ -195,5 +195,60 @@ class UserModel extends DatabaseModel {
       throw e;
     }
   }
+  async getListUser(conn, keyword, offset, limit, role, status) {
+    try {
+      let whereCount = `SELECT COUNT(*) AS total FROM ${tableName.tableUser} WHERE 1=1`;
+      let conditionsCount = [];
+      if (keyword) {
+        whereCount += " AND (username LIKE ? OR email LIKE ?)";
+        conditionsCount.push(`%${keyword}%`, `%${keyword}%`);
+      }
+      if (role) {
+        whereCount += " AND role = ?";
+        conditionsCount.push(role);
+      }
+      if (status !== undefined) {
+        whereCount += " AND status = ?";
+        conditionsCount.push(status);
+      }
+      const countQuery = conn.promise().query(whereCount, conditionsCount);
+
+      let whereData = `SELECT id,username,email,verify_token,expired_time,is_verify,role,status,created_at, updated_at FROM ${tableName.tableUser} WHERE 1=1`;
+      let conditionsData = [];
+
+      if (keyword) {
+        whereData += " AND (username LIKE ? OR email LIKE ?)";
+        conditionsData.push(`%${keyword}%`, `%${keyword}%`);
+      }
+      if (role) {
+        whereData += " AND role = ?";
+        conditionsData.push(role);
+      }
+      if (status !== undefined) {
+        whereData += " AND status = ?";
+        conditionsData.push(status);
+      }
+
+      whereData += " LIMIT ? OFFSET ?";
+      conditionsData.push(limit, offset);
+
+      const dataQuery = conn.promise().query(whereData, conditionsData);
+
+      const [countResult, dataResult] = await Promise.all([
+        countQuery,
+        dataQuery,
+      ]);
+      const total = countResult[0][0].total;
+      const data = dataResult[0];
+      const totalPages = Math.ceil(total / limit);
+      return {
+        totalRecord: total,
+        totalPages: totalPages,
+        data: data,
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 module.exports = new UserModel();

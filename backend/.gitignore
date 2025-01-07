@@ -8,13 +8,13 @@ node_modules/
 dist/
 logs/
 logs_/
-.env
+# .env
 .env.example
 .env.dev
 .env.local
 .env.staging
 
-.env.production
+# .env.production
  
 serverCluster.js
 
