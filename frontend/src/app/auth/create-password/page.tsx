@@ -33,11 +33,10 @@ export default function CreatePassword() {
       );
 
       if (response.result) {
-        if (response.loginData) {
-          router.push('/admin/default');
-        } else if (response.loginError) {
-          setError(response.loginError);
+        if (mode === 'reset') {
           router.push('/auth/sign-in');
+        } else if (response.loginData) {
+          router.push('/admin/default');
         } else {
           router.push('/auth/sign-in');
         }

@@ -19,7 +19,6 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      // Sử dụng lại API create user để gửi OTP
       const response = await authService.sendResetPasswordOTP(email);
       
       if (response.result) {

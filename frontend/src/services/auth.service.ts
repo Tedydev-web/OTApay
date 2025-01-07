@@ -286,8 +286,8 @@ export const authService = {
         throw new Error('Email không hợp lệ');
       }
 
-      // Sử dụng lại API create user để gửi OTP
-      const response = await axios.post(`${API_URL}/user/create`, {
+      // Sử dụng API resend-verify-code thay vì create
+      const response = await axios.post(`${API_URL}/user/resend-verify-code`, {
         email
       });
 
