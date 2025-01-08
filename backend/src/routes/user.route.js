@@ -75,6 +75,7 @@ module.exports = (app) => {
         .escape(),
     ],
     authentication,
+    authorization(moduleName.userUpdatePassword),
     UserController.changePassword
   );
   router.put(
@@ -118,6 +119,7 @@ module.exports = (app) => {
     "/get-user-by-token",
     [],
     authentication,
+    authorization(moduleName.userGetByToken),
     UserController.getUserByToken
   );
   router.get(
@@ -127,7 +129,24 @@ module.exports = (app) => {
     authorization(moduleName.userGet),
     UserController.getUserByEmail
   );
-  // router.get("/get-list-user");
+  router.get(
+    "/get-list-user",
+    [
+      query("offset", NOT_EMPTY).optional().isNumeric().escape(),
+      query("limit", NOT_EMPTY).optional().isNumeric().escape(),
+      query("keyword", NOT_EMPTY).optional().isString().escape(),
+      query("role", NOT_EMPTY).optional().isString().escape(),
+      query("status")
+        .optional()
+        .isIn([0, 1])
+        .withMessage("Status must be 0 or 1")
+        .toInt()
+        .escape(),
+    ],
+    authentication,
+    authorization(moduleName.userGet),
+    UserController.getListUser
+  );
   // router.patch("/update-user");
   app.use("/api/v1/user", router);
 };

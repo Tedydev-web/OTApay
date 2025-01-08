@@ -40,14 +40,14 @@ const { initDb } = require("./dbs/init.mysql");
 initDb();
 
 //init redis
-const { initRedis } = require("./dbs/init.redis");
-// Bọc trong try-catch để tránh crash server nếu Redis không khả dụng
-try {
-  initRedis();
-} catch (error) {
-  console.error('Redis initialization error:', error);
-  // Server vẫn tiếp tục chạy ngay cả khi Redis không khả dụng
-}
+// const { initRedis } = require("./dbs/init.redis");
+// // Bọc trong try-catch để tránh crash server nếu Redis không khả dụng
+// try {
+//   initRedis();
+// } catch (error) {
+//   console.error('Redis initialization error:', error);
+//   // Server vẫn tiếp tục chạy ngay cả khi Redis không khả dụng
+// }
 
 //middleware logger
 const loggerMiddleware = require("./middlewares/logger");

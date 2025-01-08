@@ -91,5 +91,15 @@ class EmailService {
     `;
     return this.sendMail(toEmail, subject, html);
   }
+  async sendEmailTesting(toEmail) {
+    if (this.emailSettings === null) {
+      this.emailSettings = await Settings.getEmailSetting();
+    }
+    const subject = "Testing send mail";
+    const html = `
+      <h1>Hello world!</h1>
+    `;
+    return this.sendMail(toEmail, subject, html);
+  }
 }
 module.exports = new EmailService();

@@ -148,6 +148,34 @@ class UserService {
       }
     }
   }
+  async getListUser(keyword, offset, limit, role, status) {
+    const { conn } = await db.getConnection();
+    try {
+      const result = UserModel.getListUser(
+        conn,
+        keyword,
+        offset,
+        limit,
+        role,
+        status
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+  async emailTestSendMail(email) {
+    try {
+      const result = await UserModel.emailTestSendMail(email);
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 module.exports = new UserService();

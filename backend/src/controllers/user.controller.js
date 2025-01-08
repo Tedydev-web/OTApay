@@ -60,5 +60,20 @@ class UserService {
     delete result.password;
     GET(res, result);
   });
+  getListUser = catchAsync(async (req, res, next) => {
+    const offset = req.query.offset || 0;
+    const limit = req.query.limit || 10;
+    const keyword = req.query.keyword || "";
+    const role = req.query.role || "user";
+    const status = req.query.status || "1";
+    const result = await userService.getListUser(
+      keyword,
+      offset,
+      limit,
+      role,
+      status
+    );
+    GET(res, result.data, result.totalPages, result.totalRecord);
+  });
 }
 module.exports = new UserService();
