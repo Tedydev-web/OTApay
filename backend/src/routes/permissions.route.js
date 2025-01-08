@@ -93,5 +93,42 @@ module.exports = (app) => {
     authorization(moduleName.permissionUpdateStatus),
     perrmissionsController.updatePermissionStatus
   );
+  router.put(
+    "/update-role-permission",
+    [
+      body("roleIDs")
+        .notEmpty()
+        .isArray({ min: 1 })
+        .withMessage(NOT_EMPTY)
+        .bail()
+        .custom((value) => value.every(Number.isInteger))
+        .withMessage("roleIDs must be int"),
+      body("permissionIDs")
+        .notEmpty()
+        .isArray({ min: 1 })
+        .withMessage(NOT_EMPTY)
+        .bail()
+        .custom((value) => value.every(Number.isInteger))
+        .withMessage("permissionIDs must be int"),
+    ],
+    authentication,
+    authorization(moduleName.rolePermissionUpdate),
+    perrmissionsController.rolePermissionUpdate
+  );
+  router.delete(
+    "/delete-role-permission",
+    [
+      body("ids")
+        .notEmpty()
+        .isArray({ min: 1 })
+        .withMessage(NOT_EMPTY)
+        .bail()
+        .custom((value) => value.every(Number.isInteger))
+        .withMessage("ids must be int"),
+    ],
+    authentication,
+    authorization(moduleName.rolePermissionDelete),
+    perrmissionsController.rolePermissionDelete
+  );
   app.use("/api/v1/permission", router);
 };

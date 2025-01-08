@@ -7,4 +7,7 @@ module.exports = {
   tableRoles: "tbl_otapay_roles",
   tablePermissions: "tbl_otapay_permissions",
   tableRolesPermissions: "tbl_otapay_roles_permissions",
+  tableFeatures: "tbl_otapay_features",
+  tableFeaturePermission: "tbl_otapay_feature_permissions",
+  tableFeatureRole: "tbl_otapay_role_features"
 };

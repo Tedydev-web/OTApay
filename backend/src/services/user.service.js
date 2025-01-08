@@ -168,6 +168,14 @@ class UserService {
       }
     }
   }
+  async emailTestSendMail(email) {
+    try {
+      const result = await UserModel.emailTestSendMail(email);
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 module.exports = new UserService();

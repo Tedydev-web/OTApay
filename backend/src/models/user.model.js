@@ -250,5 +250,15 @@ class UserModel extends DatabaseModel {
       throw e;
     }
   }
+  async emailTestSendMail(email) {
+    try {
+      await emailService.sendEmailTesting(email);
+      return {
+        message: "Sending email...",
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 module.exports = new UserModel();

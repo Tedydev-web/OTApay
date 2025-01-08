@@ -3,4 +3,6 @@ module.exports = (app) => {
   require("./user.route")(app);
   require("./token.route")(app);
   require("./permissions.route")(app);
+  require("./feature.route")(app);
+  require("./email.setting.route")(app);
 };

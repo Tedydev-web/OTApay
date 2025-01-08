@@ -1,6 +1,8 @@
 const db = require("../dbs/init.mysql");
 const { BusinessLogicError } = require("../core/error.response");
 const permissionsModel = require("../models/permissions.model");
+const checkValidate = require("../ultils/checkValidate");
+const tableName = require("../constants/tableName.constant");
 class PermissionsService {
   async getRoles(offset, limit, keyword, status) {
     const { conn } = await db.getConnection();
@@ -120,6 +122,67 @@ class PermissionsService {
         conn,
         permissionId
       );
+      return result;
+    } catch (e) {
+      throw e;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+  async rolePermissionUpdate(roleIDs, permissionIDs) {
+    const { conn } = await db.getConnection();
+    try {
+      for (const index of permissionIDs) {
+        const permission = permissionsModel.getPermissionDetail(conn, index);
+        if (!permission) {
+          throw new BusinessLogicError(
+            `Permission not found: ${index}`,
+            [],
+            500
+          );
+        }
+      }
+      for (const index of roleIDs) {
+        const role = await permissionsModel.getRoleDetail(conn, index);
+        if (!role) {
+          throw new BusinessLogicError(`Role not found: ${index}`, [], 500);
+        }
+      }
+      const result = await permissionsModel.rolePermissionUpdate(
+        conn,
+        roleIDs,
+        permissionIDs
+      );
+      return result;
+    } catch (e) {
+      throw e;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+  async rolePermissionDelete(ids) {
+    const { conn } = await db.getConnection();
+    try {
+      for (const index of ids) {
+        const isExist = await checkValidate.checkIsExist(
+          conn,
+          tableName.tableRolesPermissions,
+          "id",
+          index
+        );
+        if (!isExist) {
+          throw new BusinessLogicError(
+            `Role Permission not found: ${index}`,
+            [],
+            500
+          );
+        }
+      }
+      const result = await permissionsModel.rolePermissionDelete(conn, ids);
       return result;
     } catch (e) {
       throw e;

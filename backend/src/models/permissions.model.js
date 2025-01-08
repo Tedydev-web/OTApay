@@ -287,5 +287,55 @@ class PermissionsModel extends DatabaseModel {
       throw e;
     }
   }
+  async rolePermissionUpdate(conn, roleIDs, permissionIDs) {
+    try {
+      let pairs = [];
+      for (const roleId of roleIDs) {
+        for (const permissionId of permissionIDs) {
+          pairs.push([roleId, permissionId]);
+        }
+      }
+      const result = await new Promise((resolve, reject) => {
+        conn.query(
+          `INSERT INTO ${tableName.tableRolesPermissions} (role_id,permission_id) VALUES ?`,
+          [pairs],
+          (err, dataRes) => {
+            if (err) {
+              console.log(err);
+              return reject({ msg: err });
+            }
+            return resolve(dataRes);
+          }
+        );
+      });
+      return {
+        message: "Update successfully!",
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
+  async rolePermissionDelete(conn, ids) {
+    try {
+      const result = await new Promise((resolve, reject) => {
+        conn.query(
+          `DELETE FROM ${tableName.tableRolesPermissions} WHERE id IN (?)`,
+          [ids],
+          (err, dataRes) => {
+            if (err) {
+              console.log(err);
+              return reject({ msg: err });
+            }
+            return resolve(dataRes);
+          }
+        );
+      });
+      return {
+        message: "Delete sucessfully!",
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 module.exports = new PermissionsModel();

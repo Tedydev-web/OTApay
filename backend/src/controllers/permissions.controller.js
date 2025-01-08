@@ -67,8 +67,23 @@ class PermissionsController {
   });
   updatePermissionStatus = catchAsync(async (req, res, next) => {
     const permissionId = req.params.id;
-    const result = await permissionsService.updatePermissionStatus(permissionId);
+    const result = await permissionsService.updatePermissionStatus(
+      permissionId
+    );
     UPDATE(res, result);
+  });
+  rolePermissionUpdate = catchAsync(async (req, res, next) => {
+    const { roleIDs, permissionIDs } = req.body;
+    const result = await permissionsService.rolePermissionUpdate(
+      roleIDs,
+      permissionIDs
+    );
+    UPDATE(res, result);
+  });
+  rolePermissionDelete = catchAsync(async (req, res, next) => {
+    const { ids } = req.body;
+    const result = await permissionsService.rolePermissionDelete(ids);
+    DELETE(res, result);
   });
 }
 
