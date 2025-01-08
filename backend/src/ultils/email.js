@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const configureEnvironment = require("../config/dotenv.config");
 
-const { URL_LOGIN } = configureEnvironment();
+const { FE_DOMAIN, URL_LOGIN } = configureEnvironment();
 const Settings = require("../services/email.setting.service");
 class EmailService {
   constructor() {
@@ -48,7 +48,7 @@ class EmailService {
     if (this.emailSettings === null) {
       this.emailSettings = await Settings.getEmailSetting();
     }
-    const urlEmail = URL_LOGIN + `?email=${toEmail}`
+    const urlEmail = FE_DOMAIN + URL_LOGIN + `?email=${toEmail}`;
     const subject = "Account Information and Verification";
     const html = `
       <h1>Hello, ${toEmail}!</h1>
