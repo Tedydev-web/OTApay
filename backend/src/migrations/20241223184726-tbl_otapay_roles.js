@@ -20,7 +20,7 @@ exports.up = async function (db) {
   try {
     await db.createTable(tableName, {
       id: { type: "int", primaryKey: true, autoIncrement: true },
-      name: { type: "string", length: 100 },
+      name: { type: "string", length: 100, unique: true },
       guard_name: { type: "string", length: 100 },
       description: { type: "string", length: 500 },
       status: { type: "int", length: 45 },

@@ -237,17 +237,17 @@ class FeatureModel extends DatabaseModel {
       throw e;
     }
   }
-  async featureRoleCreate(conn, feature_ids, role_ids) {
+  async featurePermissionRoleCreate(conn, feature_permission_ids, role_ids) {
     try {
       let pairs = [];
-      for (const feature of feature_ids) {
+      for (const feature of feature_permission_ids) {
         for (const role of role_ids) {
           pairs.push([feature, role]);
         }
       }
       const result = await new Promise((resolve, reject) => {
         conn.query(
-          `INSERT INTO ${tableName.tableFeatureRole} (feauture_id,role_id) VALUES ?`,
+          `INSERT INTO ${tableName.tableFeaturePermissionRole} (feature_permission_id,role_id) VALUES ?`,
           [pairs],
           (err, dataRes) => {
             if (err) {
@@ -265,11 +265,9 @@ class FeatureModel extends DatabaseModel {
       throw e;
     }
   }
-  async featureRoleGetByFeatureId(conn, id) {
+  async featurePermissionRoleGetByFeaturePermissionId(conn, id) {
     try {
-      let query = `SELECT role_id, feauture_id, R.name, R.guard_name,R.description , R.status, R.created_at, R.updated_at FROM ${tableName.tableFeatureRole} FP 
-      JOIN ${tableName.tableRoles} R ON FP.role_id = R.id 
-      WHERE feauture_id = ?`;
+      let query = `SELECT id, role_id,feature_permission_id  FROM ${tableName.tableFeaturePermissionRole} WHERE feature_permission_id = ?`;
       const result = await new Promise((resolve, reject) => {
         conn.query(query, [id], (err, dataRes) => {
           if (err) {
@@ -286,9 +284,7 @@ class FeatureModel extends DatabaseModel {
   }
   async featurePerrmissionGetByRoleId(conn, id) {
     try {
-      let query = `SELECT role_id, feauture_id, F.name, F.description ,F.platform, F.status, F.created_at, F.updated_at FROM ${tableName.tableFeatureRole} FP 
-      JOIN ${tableName.tableFeatures} F ON FP.feauture_id = F.id 
-      WHERE role_id = ?`;
+      let query = `SELECT id, role_id,feature_permission_id FROM ${tableName.tableFeaturePermissionRole} WHERE role_id = ? `;
       const result = await new Promise((resolve, reject) => {
         conn.query(query, [id], (err, dataRes) => {
           if (err) {
@@ -299,27 +295,6 @@ class FeatureModel extends DatabaseModel {
         });
       });
       return result;
-    } catch (e) {
-      throw e;
-    }
-  }
-  async featurePermissionDelete(con, ids) {
-    try {
-      const result = await new Promise((resolve, reject) => {
-        con.query(
-          `DELETE FROM ${tableName.tableFeaturePermission} WHERE id IN (?)`,
-          [ids],
-          (err, dataRes) => {
-            if (err) {
-              throw err;
-            }
-            return resolve(dataRes);
-          }
-        );
-      });
-      return {
-        message: "Delete sucessfully!",
-      };
     } catch (e) {
       throw e;
     }
@@ -349,7 +324,7 @@ class FeatureModel extends DatabaseModel {
     try {
       const result = await new Promise((resolve, reject) => {
         con.query(
-          `DELETE FROM ${tableName.tableFeatureRole} WHERE id IN (?)`,
+          `DELETE FROM ${tableName.tableFeaturePermissionRole} WHERE id IN (?)`,
           [ids],
           (err, dataRes) => {
             if (err) {
@@ -362,6 +337,20 @@ class FeatureModel extends DatabaseModel {
       return {
         message: "Delete sucessfully!",
       };
+    } catch (e) {
+      throw e;
+    }
+  }
+  async getRoleFeaturePermission(con, id) {
+    try {
+      const result = await this.select(
+        con,
+        tableName.tableFeaturePermissionRole,
+        "id,role_id, feature_permission_id",
+        "id = ?",
+        [id]
+      );
+      return result[0];
     } catch (e) {
       throw e;
     }

@@ -75,17 +75,17 @@ class FeatureController {
     const result = await featureService.featurePermissionDelete(ids);
     DELETE(res, result);
   });
-  featureRoleCreate = catchAsync(async (req, res, next) => {
-    const { feature_ids, role_ids } = req.body;
-    const result = await featureService.featureRoleCreate(
-      feature_ids,
+  featurePermissionRoleCreate = catchAsync(async (req, res, next) => {
+    const { feature_permission_ids, role_ids } = req.body;
+    const result = await featureService.featurePermissionRoleCreate(
+      feature_permission_ids,
       role_ids
     );
     CREATED(res, result);
   });
-  featureRoleGetByFeatureId = catchAsync(async (req, res, next) => {
+  featurePermissionRoleGetByFeaturePermissionId = catchAsync(async (req, res, next) => {
     const id = req.params.id;
-    const result = await featureService.featureRoleGetByFeatureId(id);
+    const result = await featureService.featurePermissionRoleGetByFeaturePermissionId(id);
     GET(res, result);
   });
   featurePerrmissionGetByRoleId = catchAsync(async (req, res, next) => {

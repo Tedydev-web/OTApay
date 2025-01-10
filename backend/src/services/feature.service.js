@@ -66,6 +66,10 @@ class FeatureService {
   async featureUpdateStatus(id) {
     const { conn } = await db.getConnection();
     try {
+      const feature = await featureModel.featureGetDetail(conn, id);
+      if (!feature) {
+        throw new BusinessLogicError("No feature found!", [], 500);
+      }
       const result = await featureModel.featureUpdateStatus(conn, id);
       return result;
     } catch (e) {
@@ -101,17 +105,6 @@ class FeatureService {
       if (featurePermission) {
         throw new BusinessLogicError(
           "Feature is existing with feature permission",
-          [],
-          500
-        );
-      }
-      const featureRole = await featureModel.featureRoleGetByFeatureId(
-        conn,
-        id
-      );
-      if (featureRole) {
-        throw new BusinessLogicError(
-          "Feature is existing with feature role",
           [],
           500
         );
@@ -226,13 +219,22 @@ class FeatureService {
       }
     }
   }
-  async featureRoleCreate(feature_ids, role_ids) {
+  async featurePermissionRoleCreate(feature_permission_ids, role_ids) {
     const { conn } = await db.getConnection();
     try {
-      for (const index of feature_ids) {
-        const feature = await featureModel.getFeatureDetail(conn, index);
-        if (!feature) {
-          throw new BusinessLogicError(`Feature not found: ${index}`, [], 500);
+      for (const index of feature_permission_ids) {
+        const featurePermission = await checkValidate.checkIsExist(
+          conn,
+          tableName.tableFeaturePermission,
+          "id",
+          index
+        );
+        if (!featurePermission) {
+          throw new BusinessLogicError(
+            `Feature permission not found: ${index}`,
+            [],
+            500
+          );
         }
       }
       for (const index of role_ids) {
@@ -241,9 +243,9 @@ class FeatureService {
           throw new BusinessLogicError(`Role not found: ${index}`, [], 500);
         }
       }
-      const result = await featureModel.featureRoleCreate(
+      const result = await featureModel.featurePermissionRoleCreate(
         conn,
-        feature_ids,
+        feature_permission_ids,
         role_ids
       );
       return result;
@@ -255,14 +257,23 @@ class FeatureService {
       }
     }
   }
-  async featureRoleGetByFeatureId(id) {
+  async featurePermissionRoleGetByFeaturePermissionId(id) {
     const { conn } = await db.getConnection();
     try {
-      const feature = await featureModel.getFeatureDetail(conn, id);
-      if (!feature) {
-        throw new BusinessLogicError("Feature not found", [], 500);
+      const featurePermission = await checkValidate.checkIsExist(
+        conn,
+        tableName.tableFeaturePermissionRole,
+        "id",
+        id
+      );
+      if (!featurePermission) {
+        throw new BusinessLogicError("Feature Permission not found", [], 500);
       }
-      const result = await featureModel.featureRoleGetByFeatureId(conn, id);
+      const result =
+        await featureModel.featurePermissionRoleGetByFeaturePermissionId(
+          conn,
+          id
+        );
       return result;
     } catch (e) {
       throw e;
@@ -295,7 +306,7 @@ class FeatureService {
       for (const index of ids) {
         const existing = await checkValidate.checkIsExist(
           conn,
-          tableName.tableFeatureRole,
+          tableName.tableFeaturePermissionRole,
           "id",
           index
         );

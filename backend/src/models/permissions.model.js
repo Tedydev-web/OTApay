@@ -3,7 +3,7 @@ const tableName = require("../constants/tableName.constant");
 const checkData = require("../ultils/checkValidate");
 const { BusinessLogicError } = require("../core/error.response");
 const getTime = require("../ultils/getTime");
-
+const roleSchema = require("./schema/role.schema");
 class PermissionsModel extends DatabaseModel {
   constructor() {
     super();
@@ -332,6 +332,23 @@ class PermissionsModel extends DatabaseModel {
       });
       return {
         message: "Delete sucessfully!",
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
+  async roleCreate(conn, name, guard_name, description) {
+    try {
+      const current = await getTime.currenUnix();
+      const role = new roleSchema();
+      role.name = name;
+      role.guard_name = guard_name;
+      role.description = description;
+      role.status = 1;
+      role.created_at = current;
+      await this.insert(conn, tableName.tableRoles, role);
+      return {
+        message: "Insert new role successfully",
       };
     } catch (e) {
       throw e;

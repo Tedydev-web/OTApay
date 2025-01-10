@@ -9,5 +9,5 @@ module.exports = {
   tableRolesPermissions: "tbl_otapay_roles_permissions",
   tableFeatures: "tbl_otapay_features",
   tableFeaturePermission: "tbl_otapay_feature_permissions",
-  tableFeatureRole: "tbl_otapay_role_features"
+  tableFeaturePermissionRole: "tbl_otapay_role_features_permission"
 };

@@ -14,13 +14,13 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const tableName = "tbl_otapay_roles_permissions";
+const tableName = "tbl_otapay_role_features_permission";
 exports.up = async function (db) {
   try {
     await db.createTable(tableName, {
       id: { type: "int", primaryKey: true, autoIncrement: true },
       role_id: { type: "int" },
-      permission_id: { type: "int"},
+      feature_permission_id: { type: "int" },
     });
     console.log(`Table ${tableName} created successfully.`);
   } catch (error) {

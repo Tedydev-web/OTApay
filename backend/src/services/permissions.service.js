@@ -192,6 +192,24 @@ class PermissionsService {
       }
     }
   }
+  async roleCreate(name, guard_name, description) {
+    const { conn } = await db.getConnection();
+    try {
+      const result = await permissionsModel.roleCreate(
+        conn,
+        name,
+        guard_name,
+        description
+      );
+      return result;
+    } catch (e) {
+      throw e;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
 }
 
 module.exports = new PermissionsService();

@@ -148,9 +148,9 @@ module.exports = (app) => {
 
   //----------------------------------------
   router.post(
-    "/create-feature-role",
+    "/create-feature-permission-role",
     [
-      body("feature_ids")
+      body("feature_permission_ids")
         .notEmpty()
         .isArray({ min: 1 })
         .withMessage(NOT_EMPTY)
@@ -166,25 +166,25 @@ module.exports = (app) => {
         .withMessage("role_ids must be int"),
     ],
     authentication,
-    authorization(moduleName.featureRoleCreate),
-    featureController.featureRoleCreate
+    authorization(moduleName.featurePermissionRoleCreate),
+    featureController.featurePermissionRoleCreate
   );
   router.get(
-    "/get-role-by-feature/:id",
+    "/get-role-by-feature-permission/:id",
     [],
     authentication,
-    authorization(moduleName.featureRoleGetByFeatureId),
-    featureController.featureRoleGetByFeatureId
+    authorization(moduleName.featurePermissionRoleGetByFeatureId),
+    featureController.featurePermissionRoleGetByFeaturePermissionId
   );
   router.get(
-    "/get-feature-by-role/:id",
+    "/get-feature-permission-by-role/:id",
     [],
     authentication,
     authorization(moduleName.featurePerrmissionGetByRoleId),
     featureController.featurePerrmissionGetByRoleId
   );
   router.delete(
-    "/delete-feature-role",
+    "/delete-feature-permission-role",
     [
       body("ids")
         .notEmpty()

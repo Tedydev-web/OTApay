@@ -85,6 +85,15 @@ class PermissionsController {
     const result = await permissionsService.rolePermissionDelete(ids);
     DELETE(res, result);
   });
+  roleCreate = catchAsync(async (req, res, next) => {
+    const { name, guard_name, description } = req.body;
+    const result = await permissionsService.roleCreate(
+      name,
+      guard_name,
+      description
+    );
+    CREATED(res, result);
+  });
 }
 
 module.exports = new PermissionsController();

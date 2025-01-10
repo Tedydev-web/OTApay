@@ -11,6 +11,29 @@ const authorization = require("../middlewares/authorization");
 const moduleName = require("../constants/moduleName.constant");
 
 module.exports = (app) => {
+  router.post(
+    "/add-role",
+    [
+      body("name", NOT_EMPTY)
+        .notEmpty()
+        .isString()
+        .withMessage(VALIDATE_DATA)
+        .escape(),
+      body("guard_name", NOT_EMPTY)
+        .notEmpty()
+        .isString()
+        .withMessage(VALIDATE_DATA)
+        .escape(),
+      body("description", VALIDATE_DATA)
+        .notEmpty()
+        .isString()
+        .withMessage(VALIDATE_DATA)
+        .escape(),
+    ],
+    authentication,
+    authorization(moduleName.roleCreate),
+    perrmissionsController.roleCreate
+  );
   router.get(
     "/get-roles",
     [

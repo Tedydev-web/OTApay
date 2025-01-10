@@ -21,11 +21,12 @@ module.exports = {
   featurePerrmissionGetByFeatureId: "feature.permissioon.get.by.id",
   featurePerrmissionGetByPermissionId: "feature.permission.get.by.permission",
   featurePermissionDelete: "feature.permission.delete",
-  featureRoleCreate: "feature.role.create",
-  featureRoleGetByFeatureId: "feature.role.get.by.id",
-  featurePerrmissionGetByRoleId: "feature.role.get.by.role",
+  featurePermissionRoleCreate: "feature.permission.role.create",
+  featurePermissionRoleGetByFeatureId: "feature.permission.role.get.by.id",
+  featurePerrmissionGetByRoleId: "feature.permission.role.get.by.role",
   featureRoleDelete: "feature.role.delete",
   emailSettingGet: "email.setting.get",
   emailSettingUpdate: "email.setting.update",
-  emailTestSendMail: "email.test.send.mail"
+  emailTestSendMail: "email.test.send.mail",
+  roleCreate: "role.create"
 };
